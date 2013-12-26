@@ -3,6 +3,7 @@ This project provides some solutions to the [Ninety-Nine Scala Problems](http://
 
 # Installation #
 You can run the solution via SBT:
+
     $ sbt run
 
 # License #
