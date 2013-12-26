@@ -29,7 +29,7 @@ trait P23 extends ExerciseTemplate {
     val l = List('a, 'b, 'c, 'd, 'f, 'g, 'h)
     val randomList = randomSelect(3, l)
     // Size
-    assert(randomList.size == 3)
+    assert(randomList.distinct.size == 3)
     // Inclusion of randomList into l
     assert(randomList.forall(l.contains(_)))
   }
