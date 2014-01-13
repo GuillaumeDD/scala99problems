@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P12
 
-object sol01 extends P12 {
+class sol01 extends P12 {
   def decode[T](l: List[(Int, T)]): List[T] =
     l match {
       case List() => List()

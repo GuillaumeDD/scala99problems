@@ -13,7 +13,7 @@ package list.P25
 import scala.reflect.ClassTag
 import scala.collection.mutable.ArrayBuffer
 
-object sol02 extends P25 {
+class sol02 extends P25 {
 
   /**
    * Shuffle a list (Fisher-Yates shuffle algorithm)
@@ -25,7 +25,7 @@ object sol02 extends P25 {
      * A word on the mutable structure.
      * This implementation uses ArrayBuffer due to intricacies 
      * in conversion of List[T] into Array[T] (which requires a ClassTag)
-     * Following operations of ArrayBuffer are constant time complexity :
+     * Following operations of ArrayBuffer are constant time complexity:
      * head, apply, update
      * See http://www.scala-lang.org/docu/files/collections-api/collections_40.html
      */

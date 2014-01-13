@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P21
 
-object sol01 extends P21 {
+class sol01 extends P21 {
   def insertAt[T](elt: T, index: Int, l: List[T]): List[T] =
     (index, l) match {
       case (_, List()) => List(elt)

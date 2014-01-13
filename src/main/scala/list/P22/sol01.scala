@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P22
 
-object sol01 extends P22 {
+class sol01 extends P22 {
   def range(min: Int, max: Int): List[Int] =
     {
       require(min <= max)

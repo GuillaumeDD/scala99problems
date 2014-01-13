@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P25
 
-object sol01 extends P25 {
+class sol01 extends P25 {
 
   import list.P23.sol02._
 

@@ -13,7 +13,7 @@ package list.P17
 import util.ExerciseTemplate
 import scala.annotation.tailrec
 
-object sol02 extends P17 {
+class sol02 extends P17 {
   def split[T](index: Int, l: List[T]): (List[T], List[T]) =
     {
       @tailrec

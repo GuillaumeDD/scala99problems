@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P08
 
-object sol03 extends P08 {
+class sol03 extends P08 {
   def compress[T](l: List[T]): List[T] =
     l match {
       case List() =>

@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P05
 
-object sol01 extends P05 {
+class sol01 extends P05 {
   def reverse[T](l: List[T]): List[T] =
     l match {
       case List() =>

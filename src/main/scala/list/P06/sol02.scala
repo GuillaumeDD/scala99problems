@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P06
 
-object sol02 extends P06 {
+class sol02 extends P06 {
   def isPalindrome[T](l: List[T]): Boolean = {
     def isPalindrome(start: Int, end: Int): Boolean =
       if (start >= end)

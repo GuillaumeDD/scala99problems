@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P17
 
-object sol01 extends P17 {
+class sol01 extends P17 {
   def split[T](index: Int, l: List[T]): (List[T], List[T]) =
     {
       def splitHelper(curIndex: Int, curL: List[T]): (List[T], List[T]) =

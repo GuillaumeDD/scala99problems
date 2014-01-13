@@ -14,14 +14,12 @@ package list.P01
 
 import scala.annotation.tailrec
 
-object sol01 extends P01 {
-  /*
-	P01 (*) Find the last element of a list.
-    Example:
+class sol01 extends P01 {
+  def last[T](l: List[T]): T =
+    sol01.last(l)
+}
 
-    scala> last(List(1, 1, 2, 3, 5, 8))
-    res0: Int = 8
-   */
+object sol01 {
   @tailrec
   def last[T](l: List[T]): T = {
     l match {

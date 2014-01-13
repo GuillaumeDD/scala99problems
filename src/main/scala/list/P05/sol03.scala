@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P05
 
-object sol03 extends P05 {
+class sol03 extends P05 {
   def reverse[T](l: List[T]): List[T] =
     (l foldLeft List[T]())((newList, elt) => (elt +: newList))
 }

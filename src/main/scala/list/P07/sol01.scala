@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P07
 
-object sol01 extends P07 {
+class sol01 extends P07 {
   def flatten(l: List[Any]): List[Any] = {
     // Helper function
     def flattenAny(elt: Any): List[Any] =

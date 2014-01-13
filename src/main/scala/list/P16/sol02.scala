@@ -12,7 +12,7 @@ package list.P16
 
 import scala.annotation.tailrec
 
-object sol02 extends P16 {
+class sol02 extends P16 {
   def drop[T](freq: Int, l: List[T]): List[T] =
     {
       @tailrec

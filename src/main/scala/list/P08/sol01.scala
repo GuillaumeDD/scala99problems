@@ -10,10 +10,9 @@
  ******************************************************************************/
 package list.P08
 
-object sol01 extends P08 {
+class sol01 extends P08 {
   def compress[T](l: List[T]): List[T] =
     {
-      // Helper function
       def compressHelper[T](l: List[T], elt: T): List[T] = {
         l match {
           case List() =>

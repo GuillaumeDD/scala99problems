@@ -7,3 +7,5 @@ scalaVersion := "2.10.3"
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
 libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0"
+
+scalaSource in Test := baseDirectory.value / "src/main/scala"

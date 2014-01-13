@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P18
 
-object sol01 extends P18 {
+class sol01 extends P18 {
   def slice[T](borneInf: Int, borneSup: Int, l: List[T]): List[T] =
     {
       require(borneInf <= borneSup)

@@ -12,7 +12,7 @@ package list.P21
 
 import scala.annotation.tailrec
 
-object sol02 extends P21 {
+class sol02 extends P21 {
   def insertAt[T](elt: T, index: Int, l: List[T]): List[T] = {
     @tailrec
     def insertAtHelper(n: Int, ls: List[T], acc: List[T]): List[T] =

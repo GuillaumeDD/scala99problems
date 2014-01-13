@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P19
 
-object sol01 extends P19 {
+class sol01 extends P19 {
   def rotate[T](n: Int, l: List[T]): List[T] =
     (n, l) match {
       case (0, _) => l

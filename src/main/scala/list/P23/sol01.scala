@@ -15,7 +15,7 @@ package list.P23
 import util._
 import list.P20.sol01._
 
-object sol01 extends P23 {
+class sol01 extends P23 {
   def randomSelect[T](nb: Int, l: List[T]): List[T] =
     {
       require(nb <= l.size, s"$nb is greater than the list size ($l.size)")

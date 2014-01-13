@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P10
 
-object sol01 extends P10 {
+class sol01 extends P10 {
   import list.P09.sol01._
   def encode[T](l: List[T]): List[(Int, T)] =
     l match {

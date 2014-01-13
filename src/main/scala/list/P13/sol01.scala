@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P13
 
-object sol01 extends P13 {
+class sol01 extends P13 {
   def encodeDirect[T](l: List[T]): List[(Int, T)] =
     l match {
       case List() => List()

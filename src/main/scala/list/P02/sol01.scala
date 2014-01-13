@@ -12,7 +12,12 @@ package list.P02
 
 import scala.annotation.tailrec
 
-object sol01 extends P02 {
+class sol01 extends P02 {
+  def penultimate[T](l: List[T]): T =
+    sol01.penultimate(l)
+}
+
+object sol01 {
   @tailrec
   def penultimate[T](l: List[T]): T =
     l match {
@@ -23,4 +28,5 @@ object sol01 extends P02 {
       case _ =>
         throw new NoSuchElementException()
     }
+  
 }

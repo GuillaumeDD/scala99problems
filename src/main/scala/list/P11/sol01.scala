@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P11
 
-object sol01 extends P11 {
+class sol01 extends P11 {
 
   import list.P09.sol01._
   // Note the Either type associated with Left and Right

@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P16
 
-object sol01 extends P16 {
+class sol01 extends P16 {
   def drop[T](freq: Int, l: List[T]): List[T] =
     {
       def dropHelper[T](freqCompteur: Int, ls: List[T]): List[T] =

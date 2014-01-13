@@ -10,7 +10,7 @@
  ******************************************************************************/
 package list.P19
 
-object sol02 extends P19 {
+class sol02 extends P19 {
   def rotate[T](n: Int, l: List[T]): List[T] = {
     val rotations = if (l.isEmpty) 0 else n % l.size
     if (rotations < 0) {
