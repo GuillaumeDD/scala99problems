@@ -4,7 +4,7 @@ This project provides some solutions to the [Ninety-Nine Scala Problems](http://
 # Installation #
 You can run the solution via SBT:
 
-    $ sbt run
+    $ sbt test
 
 # License #
 GPLv3 - see the COPYING file.
