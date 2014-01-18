@@ -24,7 +24,7 @@ class sol01 extends P31 {
         case n =>
           var i = 2
           var result = true
-          while (((i * i) < (n * n)) && result) {
+          while ((i * i  <= n) && result) {
             if (n % i == 0) {
               result = false
             } else {
