@@ -42,6 +42,7 @@ trait P31 extends ExerciseTemplate {
     assert(isPrime(7))
     assert(isPrime(11))
     assert(isPrime(97))
+    assert(isPrime(15487019))
   }
 
   test("Invoking isPrime on a non-prime number should return false") {
