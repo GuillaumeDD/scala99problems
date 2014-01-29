@@ -18,11 +18,11 @@ class sol02 extends P16 {
       @tailrec
       def dropHelper[T](freqCompteur: Int, ls: List[T], acc: List[T]): List[T] =
         (freqCompteur, ls) match {
-          case (_, List()) => acc
+          case (_, List()) => acc.reverse
           case (1, _ :: tail) =>
             dropHelper(freq, tail, acc)
           case (_, head :: tail) =>
-            dropHelper(freqCompteur - 1, tail, acc :+ head)
+            dropHelper(freqCompteur - 1, tail, head :: acc)
         }
 
       dropHelper(freq, l, List())

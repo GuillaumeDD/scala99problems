@@ -29,10 +29,10 @@ object sol02 {
       def primeFactorsHelper(a: Int, primes: Stream[Int], acc: List[Int]): List[Int] =
         a match {
           case 1 =>
-            acc
+            acc.reverse
           case a =>
             if (a % primes.head == 0) {
-              primeFactorsHelper(a / primes.head, primes, acc :+ primes.head)
+              primeFactorsHelper(a / primes.head, primes, primes.head :: acc)
             } else {
               primeFactorsHelper(a, primes.tail, acc)
             }
