@@ -22,9 +22,4 @@ class sol03 extends P31 {
         arithmetic.Util.primes.takeWhile(prime => prime * prime <= n)
         .forall(prime => n % prime != 0)
     }
-
-  test("Taking 25 prime numbers should return the 25 first prime numbers") {
-    assert(arithmetic.Util.primes.take(25).toList ==
-      List(2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97))
-  }
 }
