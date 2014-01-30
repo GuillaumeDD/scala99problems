@@ -15,7 +15,7 @@ import util.tictac
 
 object BenchmarkP36 extends App {
   // Loading primes
-  val primes = arithmetic.P31.sol03.primes
+  val primes = arithmetic.Util.primes
   // Benchmark
   tictac("P36-sol01") {
     (new sol01()).primeFactorMultiplicity(315)

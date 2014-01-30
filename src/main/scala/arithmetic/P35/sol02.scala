@@ -38,7 +38,6 @@ object sol02 {
             }
         }
       // Usage of a stream of prime numbers
-      import arithmetic.P31.sol03._
-      primeFactorsHelper(n, primes, List())
+      primeFactorsHelper(n, arithmetic.Util.primes, List())
     }
 }
