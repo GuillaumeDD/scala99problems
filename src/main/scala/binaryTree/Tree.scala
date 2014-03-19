@@ -18,7 +18,10 @@ package binaryTree
  * A binary tree is either empty or is composed of a root element and two successors,
  * which are binary tree themselves.
  */
-sealed abstract class Tree[+T]
+sealed abstract class Tree[+T] {
+  def isSymmetric: Boolean
+  def isMirrorOf[V](t: Tree[V]): Boolean
+}
 
 object Tree {
   def cBalanced[T](nbNodes: Int, value: T): List[Tree[T]] = {
@@ -53,6 +56,17 @@ case class Node[+T](
   value: T,
   left: Tree[T],
   right: Tree[T]) extends Tree[T] {
+  def isSymmetric: Boolean =
+    left.isMirrorOf(right)
+
+  def isMirrorOf[V](t: Tree[V]): Boolean =
+    t match {
+      case tree: Node[V] =>
+        left.isMirrorOf(tree.right) && right.isMirrorOf(tree.left)
+      case _ =>
+        false
+    }
+
   override def toString = "T(" + value.toString + " " + left.toString + " " + right.toString + ")"
 }
 
@@ -61,5 +75,8 @@ object Node {
 }
 
 case object End extends Tree[Nothing] {
+  def isSymmetric: Boolean = true
+  def isMirrorOf[V](t: Tree[V]): Boolean =
+    t == End
   override def toString = "."
 }
