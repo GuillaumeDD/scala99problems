@@ -21,9 +21,29 @@ package binaryTree
 sealed abstract class Tree[+T] {
   def isSymmetric: Boolean
   def isMirrorOf[V](t: Tree[V]): Boolean
+
+  /**
+   * Adds an element to the binary search tree
+   *
+   */
+  def addValue[U >: T <% Ordered[U]](x: U): Tree[U]
 }
 
 object Tree {
+
+  /**
+   * Returns a binary search tree from the list of elements
+   *
+   */
+  def fromList[U <% Ordered[U]](l: List[U]): Tree[U] =
+    l.foldLeft(End: Tree[U])((result, elt) => result.addValue(elt))
+
+  /**
+   * Returns a balanced tree with the same value on each node
+   * @param nbNodes Number of nodes of the tree
+   * @param value Default value
+   *
+   */
   def cBalanced[T](nbNodes: Int, value: T): List[Tree[T]] = {
     def isOdd(n: Int): Boolean =
       n % 2 == 1
@@ -67,6 +87,12 @@ case class Node[+T](
         false
     }
 
+  def addValue[U >: T <% Ordered[U]](x: U): Tree[U] =
+    if (x > value) {
+      Node(value, left, right.addValue(x))
+    } else {
+      Node(value, left.addValue(x), right)
+    }
   override def toString = "T(" + value.toString + " " + left.toString + " " + right.toString + ")"
 }
 
@@ -78,5 +104,7 @@ case object End extends Tree[Nothing] {
   def isSymmetric: Boolean = true
   def isMirrorOf[V](t: Tree[V]): Boolean =
     t == End
+  def addValue[U <% Ordered[U]](x: U): Tree[U] =
+    Node(x, End, End)
   override def toString = "."
 }
