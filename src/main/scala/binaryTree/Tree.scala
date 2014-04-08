@@ -27,6 +27,11 @@ sealed abstract class Tree[+T] {
    *
    */
   def addValue[U >: T <% Ordered[U]](x: U): Tree[U]
+
+  /**
+   * Returns the number of node in a tree
+   */
+  def nodeNumber: Int
 }
 
 object Tree {
@@ -70,6 +75,27 @@ object Tree {
           .flatten
     }
   }
+
+  /**
+   * Construct height-balanced binary trees for a given height with a supplied value for the nodes
+   */
+  def hbalTrees[T](n: Int, elem: T): List[Tree[T]] =
+    n match {
+      case 0 => List(End)
+      case 1 => List(Node(elem))
+      case h =>
+        val subtrees = hbalTrees(h - 1, elem)
+        val smallerSubtrees = hbalTrees(h - 2, elem)
+        (for {
+          l <- subtrees
+          r <- subtrees
+        } yield (Node(elem, l, r))) ++ (
+          for {
+            l <- subtrees
+            r <- smallerSubtrees
+          } yield (List(Node(elem, l, r), Node(elem, r, l))))
+          .flatten
+    }
 }
 
 case class Node[+T](
@@ -93,6 +119,10 @@ case class Node[+T](
     } else {
       Node(value, left.addValue(x), right)
     }
+
+  def nodeNumber: Int =
+    1 + left.nodeNumber + right.nodeNumber
+
   override def toString = "T(" + value.toString + " " + left.toString + " " + right.toString + ")"
 }
 
@@ -102,9 +132,15 @@ object Node {
 
 case object End extends Tree[Nothing] {
   def isSymmetric: Boolean = true
+
   def isMirrorOf[V](t: Tree[V]): Boolean =
     t == End
+
   def addValue[U <% Ordered[U]](x: U): Tree[U] =
     Node(x, End, End)
+
+  def nodeNumber: Int =
+    0
+
   override def toString = "."
 }
