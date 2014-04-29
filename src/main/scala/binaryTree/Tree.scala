@@ -39,6 +39,11 @@ sealed abstract class Tree[+T] {
    * @return the number of leaf in a tree
    */
   def leafCount: Int
+
+  /**
+   * Collect the leaves of a binary tree in a list.
+   */
+  def leafList: List[T]
 }
 
 object Tree {
@@ -203,6 +208,13 @@ case class Node[+T](
         left.leafCount + right.leafCount
     }
 
+  def leafList: List[T] =
+    (left, right) match {
+      case (End, End) => List(value)
+      case _ =>
+        left.leafList ::: right.leafList
+    }
+
   override def toString = "T(" + value.toString + " " + left.toString + " " + right.toString + ")"
 }
 
@@ -224,6 +236,8 @@ case object End extends Tree[Nothing] {
 
   def leafCount: Int =
     0
+
+  def leafList: List[Nothing] = List()
 
   override def toString = "."
 }
