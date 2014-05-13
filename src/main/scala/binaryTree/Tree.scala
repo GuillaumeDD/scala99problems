@@ -49,6 +49,11 @@ sealed abstract class Tree[+T] {
    * Collects the internal nodes of a binary tree in a list.
    */
   def internalList: List[T]
+
+  /**
+   * Collects the nodes at a given level in a list.
+   */
+  def atLevel(l: Int): List[T]
 }
 
 object Tree {
@@ -227,6 +232,16 @@ case class Node[+T](
         value :: (left.internalList ::: right.internalList)
     }
 
+  def atLevel(l: Int): List[T] =
+    {
+      require(l > 0)
+      l match {
+        case 1 => List(value)
+        case n =>
+          left.atLevel(n - 1) ::: right.atLevel(n - 1)
+      }
+    }
+
   override def toString = "T(" + value.toString + " " + left.toString + " " + right.toString + ")"
 }
 
@@ -253,6 +268,12 @@ case object End extends Tree[Nothing] {
 
   def internalList: List[Nothing] =
     List()
-    
+
+  def atLevel(l: Int): List[Nothing] =
+    {
+      require(l > 0)
+      List()
+    }
+
   override def toString = "."
 }
