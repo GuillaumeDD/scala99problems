@@ -184,6 +184,23 @@ object Tree {
       // Only keep trees with correct number of nodes
       trees.filter(_.nodeNumber == n)
     }
+
+  /**
+   * Constructs a complete binary tree.
+   * It takes as parameters the number of nodes and the value to put in each node.
+   */
+  def completeBinaryTree[T](n: Int, elt: T): Tree[T] =
+    {
+      require(n >= 0)
+      def generateTree(i: Int): Tree[T] =
+        if (i > n) {
+          End
+        } else {
+          Node(elt, generateTree(2 * i), generateTree(2 * i + 1))
+        }
+
+      generateTree(1)
+    }
 }
 
 case class Node[+T](
