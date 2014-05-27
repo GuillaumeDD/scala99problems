@@ -54,6 +54,17 @@ sealed abstract class Tree[+T] {
    * Collects the nodes at a given level in a list.
    */
   def atLevel(l: Int): List[T]
+
+  /**
+   * Layout a binary tree.
+   * In this layout strategy, the position of a node v is obtained by the following two rules:
+   *  - x(v) is equal to the position of the node v in the inorder sequence
+   *  - y(v) is equal to the depth of the node v in the tree
+   */
+  def layoutBinaryTree: Tree[T] =
+    this.helperLayoutBinaryTree(1, 1)._1
+
+  def helperLayoutBinaryTree(depth: Int, inorder: Int): (Tree[T], Int)
 }
 
 object Tree {
@@ -203,10 +214,16 @@ object Tree {
     }
 }
 
-case class Node[+T](
-  value: T,
-  left: Tree[T],
-  right: Tree[T]) extends Tree[T] {
+/**
+ * Binary node of a tree.
+ * @author Guillaume DUBUISSON DUPLESSIS <guillaume.dubuisson_duplessis@insa-rouen.fr>
+ *
+ */
+abstract class Node[+T] extends Tree[T] {
+  def value: T
+  def left: Tree[T]
+  def right: Tree[T]
+
   def isSymmetric: Boolean =
     left.isMirrorOf(right)
 
@@ -259,11 +276,57 @@ case class Node[+T](
       }
     }
 
+  def helperLayoutBinaryTree(depth: Int, inorder: Int): (Tree[T], Int) = {
+    // Computes the left binary tree by incrementing the depth
+    val (newLeft, newInorder) = left.helperLayoutBinaryTree(depth + 1, inorder)
+    // Computes the right binary by incrementing the depth, and the inorder number
+    val (newRight, nextInorder) = right.helperLayoutBinaryTree(depth + 1, newInorder + 1)
+    // Returns a new positioned node with the next inorder number
+    (PositionedNode(value, newLeft, newRight, newInorder, depth), nextInorder)
+  }
+
   override def toString = "T(" + value.toString + " " + left.toString + " " + right.toString + ")"
 }
 
+case class PositionedNode[+T](
+  val value: T,
+  val left: Tree[T],
+  val right: Tree[T],
+  x: Int,
+  y: Int) extends Node[T] {
+
+  override def toString = "T[" + x.toString + "," + y.toString + "](" + value.toString + " " + left.toString + " " + right.toString + ")"
+}
+
+object PositionedNode {
+  def apply[T](value: T, x: Int, y: Int): PositionedNode[T] =
+    PositionedNode(value, End, End, x, y)
+}
+
+/**
+ * Factories and extractor for nodes.
+ * @author Guillaume DUBUISSON DUPLESSIS <guillaume.dubuisson_duplessis@insa-rouen.fr>
+ *
+ */
 object Node {
-  def apply[T](value: T): Node[T] = Node(value, End, End)
+  def apply[T](value: T): Node[T] =
+    NodeImpl(value, End, End)
+  def apply[T](value: T, left: Tree[T], right: Tree[T]): Node[T] =
+    NodeImpl(value, left, right)
+
+  def unapply[T](t: Tree[T]): Option[(T, Tree[T], Tree[T])] =
+    t match {
+      case NodeImpl(value, left, right) =>
+        Some((value, left, right))
+      case PositionedNode(value, left, right, _, _) =>
+        Some((value, left, right))
+      case _ => None
+    }
+
+  private case class NodeImpl[+T](
+    value: T,
+    left: Tree[T],
+    right: Tree[T]) extends Node[T]
 }
 
 case object End extends Tree[Nothing] {
@@ -291,6 +354,9 @@ case object End extends Tree[Nothing] {
       require(l > 0)
       List()
     }
+
+  def helperLayoutBinaryTree(depth: Int, inorder: Int): (Tree[Nothing], Int) =
+    (End, inorder)
 
   override def toString = "."
 }
