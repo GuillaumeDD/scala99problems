@@ -56,6 +56,17 @@ sealed abstract class Tree[+T] {
   def atLevel(l: Int): List[T]
 
   /**
+   * Computes the depth of the tree (starting from 1)
+   */
+  def depth: Int
+
+  /**
+   * Computes the maximum depth of the left subtree (starting from 1)
+   */
+  def maxLeftDepth: Int
+
+  // TODO find a better way to separate Tree from PositionedNode
+  /**
    * Layout a binary tree.
    * In this layout strategy, the position of a node v is obtained by the following two rules:
    *  - x(v) is equal to the position of the node v in the inorder sequence
@@ -64,6 +75,19 @@ sealed abstract class Tree[+T] {
   def layoutBinaryTree: Tree[T] =
     this.helperLayoutBinaryTree(1, 1)._1
 
+  /**
+   * @see Problem 65
+   */
+  def layoutBinaryTree2: Tree[T] = {
+    val maxDepth = this.depth
+    val leftDepth = this.maxLeftDepth
+    val xRoot = 1 + (for (i <- 2 to leftDepth) yield (Math.pow(2, maxDepth - i).toInt)).sum
+    layoutBinaryTree2Helper(xRoot, 1, maxDepth - 2)
+  }
+
+  // TODO protect this helper method
+  def layoutBinaryTree2Helper(x: Int, depth: Int, exp: Int): Tree[T]
+  // TODO protect this helper method
   def helperLayoutBinaryTree(depth: Int, inorder: Int): (Tree[T], Int)
 }
 
@@ -259,6 +283,16 @@ abstract class Node[+T] extends Tree[T] {
         left.leafList ::: right.leafList
     }
 
+  def depth: Int =
+    {
+      val leftDepth = left.depth
+      val rightDepth = right.depth
+      1 + (leftDepth max rightDepth)
+    }
+
+  def maxLeftDepth: Int =
+    1 + left.maxLeftDepth
+
   def internalList: List[T] =
     (left, right) match {
       case (End, End) => List()
@@ -283,6 +317,24 @@ abstract class Node[+T] extends Tree[T] {
     val (newRight, nextInorder) = right.helperLayoutBinaryTree(depth + 1, newInorder + 1)
     // Returns a new positioned node with the next inorder number
     (PositionedNode(value, newLeft, newRight, newInorder, depth), nextInorder)
+  }
+
+  def layoutBinaryTree2Helper(x: Int, depth: Int, exp: Int): Tree[T] = {
+    val xLeft = x - Math.pow(2, exp).toInt
+    val xRight = x + Math.pow(2, exp).toInt
+    PositionedNode(
+      value,
+      // New PositionedNode (left)
+      left.layoutBinaryTree2Helper(
+        xLeft,
+        depth + 1,
+        exp - 1),
+      // New PositionedNode (right)
+      right.layoutBinaryTree2Helper(
+        xRight,
+        depth + 1,
+        exp - 1),
+      x, depth)
   }
 
   override def toString = "T(" + value.toString + " " + left.toString + " " + right.toString + ")"
@@ -355,8 +407,17 @@ case object End extends Tree[Nothing] {
       List()
     }
 
+  def depth: Int =
+    0
+
+  def maxLeftDepth: Int =
+    0
+
   def helperLayoutBinaryTree(depth: Int, inorder: Int): (Tree[Nothing], Int) =
     (End, inorder)
+
+  def layoutBinaryTree2Helper(x: Int, depth: Int, exp: Int): Tree[Nothing] =
+    End
 
   override def toString = "."
 }
