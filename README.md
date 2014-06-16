@@ -14,9 +14,9 @@ Every  problem belongs  to  a category.   Every  category (working  with
 lists,  arithmetic,  logic  and  codes, binary  trees,  multiway  trees,
 graphs,  misc) has  its own  package. A  problem and  its solutions  are
 regrouped in a subpackage of a category package. Then, the recipe is:
-1. Find the category package (or create it, if it does not exist)
-2. Create a subpackage referring to the problem (e.g., "P42")
-3. Create  a   trait  for   the   problem  that   extends  the   trait
+ 1. Find the category package (or create it, if it does not exist)
+ 2. Create a subpackage referring to the problem (e.g., "P42")
+ 3. Create a trait for the problem that extends the trait
    "ExerciseTemplate"
    * Define in commentary the problem
    * Give a name to your problem by implementing the field "name"
