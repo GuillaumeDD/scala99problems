@@ -85,6 +85,15 @@ sealed abstract class Tree[+T] {
     layoutBinaryTree2Helper(xRoot, 1, maxDepth - 2)
   }
 
+  /**
+   * Builds the preorder sequence of this binary tree.
+   */
+  def preorder: List[T]
+  /**
+   * Builds the inorder sequence of this binary tree.
+   */
+  def inorder: List[T]
+
   // TODO protect this helper method
   def layoutBinaryTree2Helper(x: Int, depth: Int, exp: Int): Tree[T]
   // TODO protect this helper method
@@ -243,7 +252,7 @@ object Tree {
  * @author Guillaume DUBUISSON DUPLESSIS <guillaume.dubuisson_duplessis@insa-rouen.fr>
  *
  */
-abstract class Node[+T] extends Tree[T] {
+sealed abstract class Node[+T] extends Tree[T] {
   def value: T
   def left: Tree[T]
   def right: Tree[T]
@@ -337,6 +346,12 @@ abstract class Node[+T] extends Tree[T] {
       x, depth)
   }
 
+  def preorder: List[T] =
+    value :: left.preorder ::: right.preorder
+
+  def inorder: List[T] =
+    left.inorder ::: (value :: right.inorder)
+
   override def toString = "T(" + value.toString + " " + left.toString + " " + right.toString + ")"
 }
 
@@ -418,6 +433,10 @@ case object End extends Tree[Nothing] {
 
   def layoutBinaryTree2Helper(x: Int, depth: Int, exp: Int): Tree[Nothing] =
     End
+
+  def preorder: List[Nothing] = List()
+
+  def inorder: List[Nothing] = List()
 
   override def toString = "."
 }
