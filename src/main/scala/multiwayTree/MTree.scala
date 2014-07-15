@@ -33,6 +33,15 @@ case class MTree[+T](
   def nodeCount: Int =
     children.foldLeft(1)((result, nextNode) => result + nextNode.nodeCount)
 
+  /**
+   * Computes the internal path length of a tree.
+   */
+  def internalPathLength: Int =
+    children.foldLeft(0)(
+      (pathLength, child) => pathLength +
+        child.nodeCount +
+        child.internalPathLength)
+
   override def toString: String =
     s"M($value ${children.map(_.toString).mkString(",", "{", "}")})"
 }
