@@ -42,6 +42,12 @@ case class MTree[+T](
         child.nodeCount +
         child.internalPathLength)
 
+  /**
+   * Computes the postorder sequence of the tree nodes.
+   */
+  def postorder: List[T] =
+    children.flatMap(_.postorder) ::: List(value)
+
   override def toString: String =
     s"M($value ${children.map(_.toString).mkString(",", "{", "}")})"
 }
