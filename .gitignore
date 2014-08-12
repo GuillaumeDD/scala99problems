@@ -1,7 +1,6 @@
+*~
 *.cache
 *.classpath
 *.project
 .settings/
-build.sbt~
-project/
 target/
