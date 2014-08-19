@@ -10,15 +10,14 @@
  *     Guillaume DUBUISSON DUPLESSIS <guillaume.dubuisson_duplessis@insa-rouen.fr> - initial API and implementation
  * ****************************************************************************
  */
-package fr.dubuissonduplessis.graph.impl
-
-import fr.dubuissonduplessis.graph.Graphs
+package fr.dubuissonduplessis.graph.impl.digraph
 import scala.collection.mutable
+import fr.dubuissonduplessis.graph.Digraphs
 
-abstract class SequentialGraphsImpl extends Graphs {
-  class Graph private[SequentialGraphsImpl] (
+abstract class SequentialGraphsImpl extends Digraphs {
+  class Digraph private[SequentialGraphsImpl] (
     val nodes: Set[Node],
-    val edges: Set[Edge]) extends GraphSig {
+    val edges: Set[Edge]) extends DigraphSig {
     // Pre-processing to speed up graph operations
     private val outEdges, inEdges =
       new mutable.HashMap[Node, Set[Edge]] {
@@ -59,6 +58,6 @@ abstract class SequentialGraphsImpl extends Graphs {
     }
   }
 
-  def newGraph(nodes: Set[Node], edges: Set[Edge]): Graph =
-    new Graph(nodes, edges)
+  def newGraph(nodes: Set[Node], edges: Set[Edge]): Digraph =
+    new Digraph(nodes, edges)
 }

@@ -8,19 +8,20 @@
  * Contributors:
  *     Guillaume DUBUISSON DUPLESSIS <guillaume.dubuisson_duplessis@insa-rouen.fr> - initial API and implementation
  ******************************************************************************/
-package fr.dubuissonduplessis
+package fr.dubuissonduplessis.graph.impl.digraph
 
-/**
- * Provides a graph library with several implementations.
- *
- * This graph library is based on the implementation of the code given
- * in the article "Unifying Functional and Object-Oriented Programming with Scala",
- * Martin Odersky and Tiark Rompf, Communications of the ACM, vol. 57, no. 4, April 2014.
- *
- *
- * @author Guillaume DUBUISSON DUPLESSIS <guillaume.dubuisson_duplessis@insa-rouen.fr>
- *
- */
-package object graph {
+import fr.dubuissonduplessis.graph.Digraphs
 
+trait EdgesAsPairs extends Digraphs {
+  type Edge = (Node, Node)
+
+  def succ(e: Edge) = {
+    val (start, end) = e
+    end
+  }
+
+  def pred(e: Edge) = {
+    val (start, end) = e
+    start
+  }
 }
