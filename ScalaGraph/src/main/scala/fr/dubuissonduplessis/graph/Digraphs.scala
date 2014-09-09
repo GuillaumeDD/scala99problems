@@ -32,6 +32,8 @@ trait Digraphs extends BaseGraphs {
     def outgoing(n: Node): Set[Edge]
     def incoming(n: Node): Set[Edge]
 
+    def sources: Set[Node]
+
     def adjacentNodes(n: Node): Set[Node] =
       outgoing(n).map(succ(_))
 

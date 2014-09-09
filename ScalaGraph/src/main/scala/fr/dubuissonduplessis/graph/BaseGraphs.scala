@@ -44,8 +44,6 @@ trait BaseGraphs {
 
     def adjacentNodes(n: Node): Set[Node]
 
-    def sources: Set[Node]
-
     /**
      * Computes all acyclic paths from one node to another in a graph.
      *

@@ -14,7 +14,7 @@ package fr.dubuissonduplessis.graph.impl.digraph
 import scala.collection.mutable
 import fr.dubuissonduplessis.graph.Digraphs
 
-abstract class SequentialGraphsImpl extends Digraphs {
+trait SequentialGraphsImpl extends Digraphs {
   class Digraph private[SequentialGraphsImpl] (
     val nodes: Set[Node],
     val edges: Set[Edge]) extends DigraphSig {
