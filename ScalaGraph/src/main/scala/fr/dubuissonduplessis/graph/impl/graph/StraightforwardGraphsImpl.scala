@@ -1,13 +1,15 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright (c) 2014 Guillaume DUBUISSON DUPLESSIS <guillaume.dubuisson_duplessis@insa-rouen.fr>.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
- * 
+ *
  * Contributors:
  *     Guillaume DUBUISSON DUPLESSIS <guillaume.dubuisson_duplessis@insa-rouen.fr> - initial API and implementation
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package fr.dubuissonduplessis.graph.impl.graph
 
 import fr.dubuissonduplessis.graph.Graphs
@@ -28,6 +30,11 @@ trait StraightforwardGraphsImpl extends Graphs {
           })
       }
 
+    def outgoing(n: Node): Set[Edge] =
+      edges.filter(edge => nodesOf(edge)._1 == n || nodesOf(edge)._2 == n)
+    def incoming(n: Node): Set[Edge] =
+      edges.filter(edge => nodesOf(edge)._1 == n || nodesOf(edge)._2 == n)
+
     def adjacentNodes(n: Node): Set[Node] =
       {
         require(nodes.contains(n))
@@ -38,6 +45,20 @@ trait StraightforwardGraphsImpl extends Graphs {
               n2
             } else {
               n1
+            }
+          })
+      }
+
+    def adjacentNodesWithCost(n: Node): Set[(Node, EdgeCost)] =
+      {
+        require(nodes.contains(n))
+        edgesOf(n).map(edge =>
+          {
+            val (n1, n2) = nodesOf(edge)
+            if (n1 == n) {
+              (n2, costOf(edge))
+            } else {
+              (n1, costOf(edge))
             }
           })
       }

@@ -23,19 +23,26 @@ trait Digraphs extends BaseGraphs {
    * Determines the ending node of an oriented edge.
    */
   def succ(e: Edge): Node
+
   def nodesOf(e: Edge): (Node, Node) =
     (pred(e), succ(e))
 
   type Digraph <: DigraphSig
 
   trait DigraphSig extends BaseGraph {
-    def outgoing(n: Node): Set[Edge]
-    def incoming(n: Node): Set[Edge]
-
     def sources: Set[Node]
 
     def adjacentNodes(n: Node): Set[Node] =
       outgoing(n).map(succ(_))
+
+    def adjacentNodesWithCost(n: Node): Set[(Node, EdgeCost)] =
+      outgoing(n).map(edge => (succ(edge), costOf(edge)))
+
+    def edgeBetween(n1: Node, n2: Node): Option[Edge] =
+      edges.find(edge => {
+        val (n1_, n2_) = (pred(edge), succ(edge))
+        (n1_ == n1 && n2_ == n2)
+      })
 
     // Specific algorithm for Digraphs
     /**

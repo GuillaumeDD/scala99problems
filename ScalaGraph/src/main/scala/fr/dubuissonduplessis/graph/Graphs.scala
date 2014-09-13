@@ -18,6 +18,13 @@ trait Graphs extends BaseGraphs {
   trait GraphSig extends BaseGraph {
     def edgesOf(n: Node): Set[Edge]
 
+    def edgeBetween(n1: Node, n2: Node): Option[Edge] =
+      edges.find(edge => {
+        val (n1_, n2_) = nodesOf(edge)
+        (n1_ == n1 && n2_ == n2) ||
+          (n1_ == n2 && n2_ == n1)
+      })
+
     def subGraph(nodes: Set[Node]): Graph = {
       // Helper function to filter edges
       def keepEdge(e: Edge): Boolean = {
