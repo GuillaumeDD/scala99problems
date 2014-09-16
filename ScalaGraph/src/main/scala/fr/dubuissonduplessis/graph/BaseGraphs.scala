@@ -128,10 +128,27 @@ trait BaseGraphs {
 
     /**
      * Computes a shortest path between two nodes, if it exists.
-     * @note Implements Dijkstra's algorithm
+     * @note Implements Dijkstra's algorithm aka uniform-cost search space.
      *
      */
     def findShortestPath(start: Node, end: Node)(implicit ord: Ordering[EdgeCost]): Option[(Path, EdgeCost)] =
+      {
+        // Definition of a heuristic always returning 0
+        val nullValue = nullCost()
+        def heuristic(start: Node, end: Node): EdgeCost =
+          nullValue
+        // Call A* implementation with an empty heuristic <=> uniform graph search (Dijkstra's algorithm) 
+        findHeuristicalShortestPath(heuristic)(start, end)
+      }
+
+    /**
+     * Determines a shortest path by taking into account a heuristic.
+     * @note Implements A* algorithm
+     * @param heuristic Heuristic function that takes as first parameter the current node
+     * and as second parameter the goal node.
+     *
+     */
+    def findHeuristicalShortestPath(heuristic: (Node, Node) => EdgeCost)(start: Node, end: Node)(implicit ord: Ordering[EdgeCost]): Option[(Path, EdgeCost)] =
       {
         require(nodes.contains(start))
         require(nodes.contains(end))
@@ -189,7 +206,8 @@ trait BaseGraphs {
 
         while (frontier.nonEmpty) {
           // Retrieval of the "cheaper" node on the frontier
-          val (currentNode, currentCost) = frontier.dequeue()
+          val (currentNode, _) = frontier.dequeue()
+          val currentCost = costSoFar(currentNode)
 
           if (!isGoal(currentNode)) {
             /* Addition to the frontier of adjacent nodes.
@@ -200,22 +218,26 @@ trait BaseGraphs {
              */
             for ((adjacentNode, costFromCurrentNodeToAdjacentNode) <- adjacentNodesWithCost(currentNode)) {
               val adjacentNodeIsInFrontier = frontierContains(adjacentNode)
-              val newPathCost = addsUp(currentCost, costFromCurrentNodeToAdjacentNode)
+              val costToReachAdjacentNode = addsUp(currentCost, costFromCurrentNodeToAdjacentNode)
 
               if (!hasBeenExplored(adjacentNode) && !adjacentNodeIsInFrontier) {
                 // New node case
                 cameFrom += (adjacentNode -> currentNode)
-                costSoFar += (adjacentNode -> newPathCost)
-                frontier.enqueue((adjacentNode, newPathCost))
-              } else if (adjacentNodeIsInFrontier && ord.lt(newPathCost, costSoFar(adjacentNode))) {
+                costSoFar += (adjacentNode -> costToReachAdjacentNode)
+                // Frontier update
+                val solutionCostEstimate = addsUp(costToReachAdjacentNode, heuristic(adjacentNode, end))
+                frontier.enqueue((adjacentNode, solutionCostEstimate))
+              } else if (adjacentNodeIsInFrontier && ord.lt(costToReachAdjacentNode, costSoFar(adjacentNode))) {
                 /*
                  * Already visited node case.
                  * Update of the node since its cost is lower than the
                  * one originally stored.
                  */
                 cameFrom += (adjacentNode -> currentNode)
-                costSoFar += (adjacentNode -> newPathCost)
-                updateFrontier(adjacentNode, newPathCost)
+                costSoFar += (adjacentNode -> costToReachAdjacentNode)
+                // Frontier update
+                val solutionCostEstimate = addsUp(costToReachAdjacentNode, heuristic(adjacentNode, end))
+                updateFrontier(adjacentNode, solutionCostEstimate)
               }
             }
           }

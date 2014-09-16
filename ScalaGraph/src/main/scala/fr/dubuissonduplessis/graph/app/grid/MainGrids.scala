@@ -1,5 +1,7 @@
 package fr.dubuissonduplessis.graph.app.grid
 
+import fr.dubuissonduplessis.benchmark.Benchmarking
+
 object MainGrids extends App {
   val grid = Array.ofDim[Int](4, 4)
   for {
@@ -23,4 +25,22 @@ object MainGrids extends App {
   val (path, cost) = g.findShortestPath((3, 0), (0, 3)).get
   println(path.mkString("->"))
   println(s"Cost: $cost")
+
+  def heuristic(currentNode: Node, endNode: Node): Int =
+    {
+      val (x1, y1) = currentNode
+      val (x2, y2) = endNode
+      (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)
+    }
+  val (path2, cost2) = g.findHeuristicalShortestPath(heuristic)((3, 0), (0, 3)).get
+  println(path2.mkString("->"))
+  println(s"Cost: $cost2")
+  
+  Benchmarking.tictac("A*") {
+    val (path, cost) = g.findShortestPath((3, 0), (0, 3)).get
+  }
+  Benchmarking.tictac("Uniform cost search") {
+    val (path, cost) = g.findShortestPath((3, 0), (0, 3)).get
+  }
+
 }
