@@ -34,6 +34,9 @@ trait Graphs extends BaseGraphs {
       newGraph(nodes,
         edges filter (keepEdge _))
     }
+
+    protected def canEqual(other: BaseGraph): Boolean =
+      other.isInstanceOf[GraphSig]
   }
 
   def newGraph(nodes: Set[Node], edges: Set[Edge]): Graph

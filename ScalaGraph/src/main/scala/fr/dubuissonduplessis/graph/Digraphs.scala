@@ -35,6 +35,9 @@ trait Digraphs extends BaseGraphs {
     def adjacentNodes(n: Node): Set[Node] =
       outgoing(n).map(succ(_))
 
+    def adjacentNodesWithEdge(n: Node): Set[(Node, Edge)] =
+      outgoing(n).map(edge => (succ(edge), edge))
+
     def adjacentNodesWithCost(n: Node): Set[(Node, EdgeCost)] =
       outgoing(n).map(edge => (succ(edge), costOf(edge)))
 
@@ -56,6 +59,8 @@ trait Digraphs extends BaseGraphs {
           (nodes contains pred(e)) &&
             (nodes contains succ(e))))
 
+    protected def canEqual(other: BaseGraph): Boolean =
+      other.isInstanceOf[DigraphSig]
   }
 
   def newGraph(nodes: Set[Node], edges: Set[Edge]): Digraph

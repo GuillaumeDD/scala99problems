@@ -49,6 +49,20 @@ trait StraightforwardGraphsImpl extends Graphs {
           })
       }
 
+    def adjacentNodesWithEdge(n: Node): Set[(Node, Edge)] =
+      {
+        require(nodes.contains(n))
+        edgesOf(n).map(edge =>
+          {
+            val (n1, n2) = nodesOf(edge)
+            if (n1 == n) {
+              (n2, edge)
+            } else {
+              (n1, edge)
+            }
+          })
+      }
+
     def adjacentNodesWithCost(n: Node): Set[(Node, EdgeCost)] =
       {
         require(nodes.contains(n))

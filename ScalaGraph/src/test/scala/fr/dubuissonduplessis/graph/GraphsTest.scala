@@ -76,4 +76,100 @@ class GraphsTest extends FunSuite {
       assert(cycles.contains(List('b', 'c', 'd', 'b')))
     }
   }
+
+  test("Invoking spanningForests on a graph should return all the spanning trees of a graph") {
+    new Basics {
+      import SimpleGraphModel._
+      /*
+       * TEST 01
+       *  a    b    c
+       */
+      val graph01 = newGraph(Set('a', 'b', 'c'), Set())
+
+      val spanningForests01 = graph01.spanningForests
+      assert(spanningForests01.size == 1)
+      assert(spanningForests01.contains(newGraph(Set('a', 'b', 'c'), Set())))
+
+      /*
+       * TEST 02
+       *  a -- b -- c
+       */
+      val graph02 = newGraph(Set('a', 'b', 'c'), Set(('a', 'b'), ('b', 'c')))
+      val solution02 = newGraph(Set('a', 'b', 'c'), Set(('a', 'b'), ('b', 'c')))
+      val spanningForests02 = graph02.spanningForests
+      assert(spanningForests02.size == 1)
+      assert(spanningForests02.contains(solution02))
+
+      /*
+       * TEST 03
+       *  a -- b
+       *   \  /
+       *    c
+       */
+      val graph03 = newGraph(Set('a', 'b', 'c'), Set(('a', 'b'), ('b', 'c'), ('a', 'c')))
+      /*
+       *  a -- b
+       *      /
+       *    c
+       */
+      val solution03_a = newGraph(Set('a', 'b', 'c'), Set(('a', 'b'), ('b', 'c')))
+      /*
+       *  a -- b
+       *   \   
+       *    c
+       */
+      val solution03_b = newGraph(Set('a', 'b', 'c'), Set(('a', 'b'), ('a', 'c')))
+      /*
+       *  a    b
+       *   \  /
+       *    c
+       */
+      val solution03_c = newGraph(Set('a', 'b', 'c'), Set(('a', 'b'), ('c', 'b')))
+      val spanningForests03 = graph03.spanningForests
+      assert(spanningForests03.size == 3)
+      assert(spanningForests03.contains(solution03_a))
+      assert(spanningForests03.contains(solution03_b))
+      assert(spanningForests03.contains(solution03_c))
+
+      /*
+       * TEST 04
+       *  a -- b      d -- e
+       *   \  /
+       *    c
+       */
+      val graph04 = newGraph(
+        Set('a', 'b', 'c', 'd', 'e'),
+        Set(('a', 'b'), ('b', 'c'), ('a', 'c'), ('d', 'e')))
+      /*
+       *  a -- b      d -- e
+       *      /
+       *    c
+       */
+      val solution04_a = newGraph(
+          Set('a', 'b', 'c', 'd', 'e'), 
+          Set(('a', 'b'), ('b', 'c'), ('d', 'e')))
+      /*
+       *  a -- b      d -- e
+       *   \   
+       *    c
+       */
+      val solution04_b = newGraph(
+          Set('a', 'b', 'c', 'd', 'e'), 
+          Set(('a', 'b'), ('a', 'c'), ('d', 'e')))
+      /*
+       *  a    b      d -- e
+       *   \  /
+       *    c
+       */
+      val solution04_c = newGraph(
+          Set('a', 'b', 'c', 'd', 'e'), 
+          Set(('a', 'b'), ('c', 'b'), ('d', 'e')))
+      val spanningForests04 = graph04.spanningForests
+      assert(spanningForests04.size == 3)
+      assert(spanningForests04.contains(solution04_a))
+      assert(spanningForests04.contains(solution04_b))
+      assert(spanningForests04.contains(solution04_c))
+
+    }
+  }
 }

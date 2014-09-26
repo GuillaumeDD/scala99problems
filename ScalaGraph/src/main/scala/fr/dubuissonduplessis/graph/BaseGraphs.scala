@@ -14,6 +14,7 @@ package fr.dubuissonduplessis.graph
 
 import scala.collection.mutable
 import scala.annotation.tailrec
+import scala.collection.immutable.Queue
 
 trait BaseGraphs {
   type Node
@@ -69,6 +70,7 @@ trait BaseGraphs {
     def edges: Set[Edge]
 
     def adjacentNodes(n: Node): Set[Node]
+    def adjacentNodesWithEdge(n: Node): Set[(Node, Edge)]
     def adjacentNodesWithCost(n: Node): Set[(Node, EdgeCost)]
 
     def edgeBetween(n1: Node, n2: Node): Option[Edge]
@@ -259,10 +261,98 @@ trait BaseGraphs {
       } yield (path)
 
     /**
+     * Computes all spanning forests of a given graph.
+     *
+     */
+    lazy val spanningForests: Set[BaseGraph] =
+      {
+        // Helper method to build all spanning trees
+        def spanningForestsHelper(
+          unvisitedNodes: Set[Node],
+          visitedNodes: Set[Node],
+          frontier: Queue[(Node, Edge)],
+          selectedEdges: Set[Edge]): Set[BaseGraph] =
+          if (frontier.isEmpty && unvisitedNodes.isEmpty) {
+            // Case 0: no more node to explore -> graph generation
+            Set(newGraph(visitedNodes, selectedEdges))
+          } else if (frontier.isEmpty) {
+            // Case 1: frontier is empty -> selection of an unvisited node
+            // (useful when building spanning forest)
+            for {
+              currentNode <- unvisitedNodes
+              newVisitedNodes = visitedNodes + currentNode
+              neighbors = adjacentNodesWithEdge(currentNode)
+                // Removal from frontier of the already visited nodes
+                .filter({
+                  case (node, _) => !newVisitedNodes.contains(node)
+                })
+              graph <- spanningForestsHelper(
+                // Update the unvisited nodes
+                unvisitedNodes - currentNode,
+                // Update the visited node
+                newVisitedNodes,
+                // Add neighbors of the new current node to the frontier
+                frontier enqueue neighbors,
+                // Don't touch the selected edges
+                selectedEdges)
+            } yield (graph)
+          } else {
+            // Case 2: frontier is not empty -> explore frontier
+            (for {
+              // Select a frontier node
+              (selectedNode, edge) <- frontier
+              // Filter frontier nodes that are already visited
+              if !visitedNodes.contains(selectedNode)
+              newVisitedNodes = visitedNodes + selectedNode
+              // Compute neighbors to be added to the frontier
+              neighbors = adjacentNodesWithEdge(selectedNode)
+              // Computation of the new frontier
+              newFrontier = (frontier enqueue neighbors)
+                // Removal of the already visited nodes
+                .filter({
+                  case (node, _) => {
+                    !newVisitedNodes.contains(node)
+                  }
+                })
+              newUnvisitedNodes = unvisitedNodes - selectedNode
+              newEdges = selectedEdges + edge
+              graph <- spanningForestsHelper(
+                newUnvisitedNodes,
+                newVisitedNodes,
+                newFrontier,
+                newEdges)
+            } yield (graph)).toSet
+          }
+
+        spanningForestsHelper(
+          nodes,
+          Set(),
+          Queue(),
+          Set())
+      }
+
+    /**
      * Computes a new graph from a given set of nodes that consists of
      * these nodes and any edges of the original graph that connect them.
      */
     def subGraph(nodes: Set[Node]): BaseGraph
+
+    // Technical methods
+    protected def canEqual(other: BaseGraph): Boolean
+    override def equals(other: Any): Boolean =
+      other match {
+        case that: BaseGraph =>
+          (that canEqual this) &&
+            that.nodes == this.nodes &&
+            that.edges == this.edges
+        case _ =>
+          false
+      }
+    override def hashCode(): Int =
+      41 * (41 + nodes.hashCode) + edges.hashCode
+    override def toString(): String =
+      s"""Nodes: ${nodes.mkString(", ")}
+Edges: ${edges.mkString(", ")}"""
   }
 
   /**
