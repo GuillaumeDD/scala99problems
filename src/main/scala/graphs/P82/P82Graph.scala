@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Guillaume DUBUISSON DUPLESSIS <guillaume.dubuisson_duplessis@insa-rouen.fr>.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/gpl.html
+ * 
+ * Contributors:
+ *     Guillaume DUBUISSON DUPLESSIS <guillaume.dubuisson_duplessis@insa-rouen.fr> - initial API and implementation
+ ******************************************************************************/
 package graphs.P82
 
 import util.ExerciseTemplate
@@ -13,12 +23,12 @@ trait P82Graph extends ExerciseTemplate with Graphs with graph.EdgesAsPairs {
     res0: List[List[String]] = List(List(f, c, b, f), List(f, b, c, f))
  */
   val name = "P82 (Cycle from a given node)"
-  def findsCycles(graph: Graph, start: Node, end: Node): List[List[Node]]
+  def findsCycles(graph: Graph, start: Node): List[List[Node]]
 
   type Node = Char
   test("Invoking findsCycles with the same start and end node should not return a cycle") {
     val graph = newGraph(Set('a'), Set())
-    assert(findsCycles(graph, 'a', 'a') == List())
+    assert(findsCycles(graph, 'a') == List())
   }
 
   test("Invoking findsCycles should return all the cycles starting at a given node") {
@@ -31,7 +41,7 @@ trait P82Graph extends ExerciseTemplate with Graphs with graph.EdgesAsPairs {
        */
     val graph = newGraph(Set('a', 'b', 'c', 'd'), Set(('a', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'd'), ('c', 'a'), ('d', 'a')))
 
-    val cycles = findsCycles(graph, 'a', 'd')
+    val cycles = findsCycles(graph, 'b')
     assert(cycles.size == 15)
     assert(cycles.contains(List('b', 'a', 'c', 'd', 'b')))
     assert(cycles.contains(List('b', 'd', 'c', 'a', 'b')))
