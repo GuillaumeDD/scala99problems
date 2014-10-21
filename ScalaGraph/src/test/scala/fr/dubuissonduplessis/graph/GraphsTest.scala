@@ -77,7 +77,7 @@ class GraphsTest extends FunSuite {
     }
   }
 
-  test("Invoking spanningForests on a graph should return all the spanning trees of a graph") {
+  test("Invoking spanningForests on a graph should return all the spanning trees of a graph ; isForest, isConnected and isTree should return the right value.") {
     new Basics {
       import SimpleGraphModel._
       /*
@@ -89,6 +89,9 @@ class GraphsTest extends FunSuite {
       val spanningForests01 = graph01.spanningForests
       assert(spanningForests01.size == 1)
       assert(spanningForests01.contains(newGraph(Set('a', 'b', 'c'), Set())))
+      assert(graph01.isForest)
+      assert(!graph01.isConnected)
+      assert(!graph01.isTree)
 
       /*
        * TEST 02
@@ -99,6 +102,9 @@ class GraphsTest extends FunSuite {
       val spanningForests02 = graph02.spanningForests
       assert(spanningForests02.size == 1)
       assert(spanningForests02.contains(solution02))
+      assert(graph02.isForest)
+      assert(graph02.isConnected)
+      assert(graph02.isTree)
 
       /*
        * TEST 03
@@ -130,6 +136,9 @@ class GraphsTest extends FunSuite {
       assert(spanningForests03.contains(solution03_a))
       assert(spanningForests03.contains(solution03_b))
       assert(spanningForests03.contains(solution03_c))
+      assert(!graph03.isForest)
+      assert(graph03.isConnected)
+      assert(!graph03.isTree)
 
       /*
        * TEST 04
@@ -146,29 +155,32 @@ class GraphsTest extends FunSuite {
        *    c
        */
       val solution04_a = newGraph(
-          Set('a', 'b', 'c', 'd', 'e'), 
-          Set(('a', 'b'), ('b', 'c'), ('d', 'e')))
+        Set('a', 'b', 'c', 'd', 'e'),
+        Set(('a', 'b'), ('b', 'c'), ('d', 'e')))
       /*
        *  a -- b      d -- e
        *   \   
        *    c
        */
       val solution04_b = newGraph(
-          Set('a', 'b', 'c', 'd', 'e'), 
-          Set(('a', 'b'), ('a', 'c'), ('d', 'e')))
+        Set('a', 'b', 'c', 'd', 'e'),
+        Set(('a', 'b'), ('a', 'c'), ('d', 'e')))
       /*
        *  a    b      d -- e
        *   \  /
        *    c
        */
       val solution04_c = newGraph(
-          Set('a', 'b', 'c', 'd', 'e'), 
-          Set(('a', 'b'), ('c', 'b'), ('d', 'e')))
+        Set('a', 'b', 'c', 'd', 'e'),
+        Set(('a', 'b'), ('c', 'b'), ('d', 'e')))
       val spanningForests04 = graph04.spanningForests
       assert(spanningForests04.size == 3)
       assert(spanningForests04.contains(solution04_a))
       assert(spanningForests04.contains(solution04_b))
       assert(spanningForests04.contains(solution04_c))
+      assert(!graph04.isForest)
+      assert(!graph04.isConnected)
+      assert(!graph04.isTree)
 
     }
   }

@@ -12,10 +12,14 @@
  */
 package fr.dubuissonduplessis.graph
 
+import scala.collection.mutable
+import scala.collection.immutable.Queue
+
 trait Graphs extends BaseGraphs {
   type Graph <: GraphSig
 
   trait GraphSig extends BaseGraph {
+
     def edgesOf(n: Node): Set[Edge]
 
     def edgeBetween(n1: Node, n2: Node): Option[Edge] =
@@ -34,6 +38,125 @@ trait Graphs extends BaseGraphs {
       newGraph(nodes,
         edges filter (keepEdge _))
     }
+
+    /**
+     * Computes all spanning forests of a given graph.
+     *
+     */
+    lazy val spanningForests: Set[Graph] =
+      {
+        // Helper method to build all spanning trees
+        def spanningForestsHelper(
+          unvisitedNodes: Set[Node],
+          visitedNodes: Set[Node],
+          frontier: Queue[(Node, Edge)],
+          selectedEdges: Set[Edge]): Set[Graph] =
+          if (frontier.isEmpty && unvisitedNodes.isEmpty) {
+            // Case 0: no more node to explore -> graph generation
+            Set(newGraph(visitedNodes, selectedEdges))
+          } else if (frontier.isEmpty) {
+            // Case 1: frontier is empty -> selection of an unvisited node
+            // (useful when building spanning forest)
+            for {
+              currentNode <- unvisitedNodes
+              newVisitedNodes = visitedNodes + currentNode
+              neighbors = adjacentNodesWithEdge(currentNode)
+                // Removal from frontier of the already visited nodes
+                .filter({
+                  case (node, _) => !newVisitedNodes.contains(node)
+                })
+              graph <- spanningForestsHelper(
+                // Update the unvisited nodes
+                unvisitedNodes - currentNode,
+                // Update the visited node
+                newVisitedNodes,
+                // Add neighbors of the new current node to the frontier
+                frontier enqueue neighbors,
+                // Don't touch the selected edges
+                selectedEdges)
+            } yield (graph)
+          } else {
+            // Case 2: frontier is not empty -> explore frontier
+            (for {
+              // Select a frontier node
+              (selectedNode, edge) <- frontier
+              // Filter frontier nodes that are already visited
+              if !visitedNodes.contains(selectedNode)
+              newVisitedNodes = visitedNodes + selectedNode
+              // Compute neighbors to be added to the frontier
+              neighbors = adjacentNodesWithEdge(selectedNode)
+              // Computation of the new frontier
+              newFrontier = (frontier enqueue neighbors)
+                // Removal of the already visited nodes
+                .filter({
+                  case (node, _) => {
+                    !newVisitedNodes.contains(node)
+                  }
+                })
+              newUnvisitedNodes = unvisitedNodes - selectedNode
+              newEdges = selectedEdges + edge
+              graph <- spanningForestsHelper(
+                newUnvisitedNodes,
+                newVisitedNodes,
+                newFrontier,
+                newEdges)
+            } yield (graph)).toSet
+          }
+
+        spanningForestsHelper(
+          nodes,
+          Set(),
+          Queue(),
+          Set())
+      }
+
+    /**
+     * Determines whether this graph is a forest (i.e., a collection of tree).
+     */
+    lazy val isForest: Boolean =
+      spanningForests.size == 1
+    /**
+     * Determines if this graph is fully connected, i.e. if it exists a path between
+     * each pair of nodes.
+     */
+    lazy val isConnected: Boolean =
+      {
+        def isConnectedHelper(
+          // Nodes left to explore
+          frontier: List[Node],
+          // Nodes that are connected
+          visitedNodes: Set[Node]): Boolean =
+          frontier match {
+            case List() =>
+              // No more node to explore
+              // Check that the set of connected nodes equals the set of nodes
+              visitedNodes == nodes
+            case currentNode :: leftNodes =>
+              // Update visited nodes
+              val newVisitedNodes = visitedNodes + currentNode
+
+              // Computation of the new frontier
+              val neighbors = adjacentNodes(currentNode)
+              val newFrontier = (leftNodes ++ neighbors)
+                // Clear frontier from already visited nodes
+                .filter(!newVisitedNodes.contains(_))
+
+              // Continue exploring the connected part
+              isConnectedHelper(newFrontier, newVisitedNodes)
+          }
+        nodes.toList match {
+          case List() =>
+            true
+          case head :: _ =>
+            isConnectedHelper(List(head), Set())
+        }
+      }
+
+    /**
+     * Determines if this graph is a tree.
+     */
+    lazy val isTree: Boolean =
+      isForest && isConnected
 
     protected def canEqual(other: BaseGraph): Boolean =
       other.isInstanceOf[GraphSig]
