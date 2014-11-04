@@ -14,6 +14,7 @@ package fr.dubuissonduplessis.graph
 
 import org.scalatest.FunSuite
 import fr.dubuissonduplessis.graph.impl.graph.DefaultGraphs
+import fr.dubuissonduplessis.graph.impl.graph.DefaultValuedGraphs
 
 class GraphsTest extends FunSuite {
   trait Basics {
@@ -21,6 +22,9 @@ class GraphsTest extends FunSuite {
       type Node = Char
     }
 
+    object SimpleValuedGraphModel extends DefaultValuedGraphs {
+      type Node = Char
+    }
     /*
        *                 _________ 
        *                /          \
@@ -182,6 +186,30 @@ class GraphsTest extends FunSuite {
       assert(!graph04.isConnected)
       assert(!graph04.isTree)
 
+    }
+  }
+
+  test("Invoking minimumSpanningTree on a graph should return a minimum spanning tree of a graph.") {
+    new Basics {
+      import SimpleValuedGraphModel._
+      val graph1 = newGraph(Set(), Set())
+      val solution1 = newGraph(Set(), Set())
+      assert(graph1.minimumSpanningTree == solution1)
+
+      /*
+       *     1
+       *  a -- b
+       * 2 \  / 4
+       * 	c
+       *  
+       */
+      val graph2 = newGraph(
+        Set('a', 'b', 'c'),
+        Set(('a', 'b', 1), ('a', 'c', 2), ('b', 'c', 4)))
+      val solution2 = newGraph(
+        Set('a', 'b', 'c'),
+        Set(('a', 'b', 1), ('a', 'c', 2)))
+      assert(graph2.minimumSpanningTree == solution2)
     }
   }
 }

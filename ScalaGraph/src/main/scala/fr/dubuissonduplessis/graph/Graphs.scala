@@ -40,6 +40,48 @@ trait Graphs extends BaseGraphs {
     }
 
     /**
+     * Computes a minimum spanning tree of this graph.
+     *
+     */
+    def minimumSpanningTree(implicit ev: EdgeCost => Ordered[EdgeCost]): Graph =
+      {
+        def helperMinimumSpanningTree(
+          selectedNodes: Set[Node],
+          selectedEdges: Set[Edge]): Graph =
+          if (selectedNodes == nodes) {
+            newGraph(selectedNodes, selectedEdges)
+          } else {
+            // 1- Choose an edge such that its origin is in 'selectedNode' and its extremity is not in 'selectedNode'
+            val candidateEdges = (edges -- selectedEdges).filter(
+              edge =>
+                {
+                  val (node1, node2) = nodesOf(edge)
+                  !selectedNodes.contains(node1) || !selectedNodes.contains(node2)
+                })
+
+            // 2- Sort candidate edges by ascending cost
+            val sortedCandidateEdges = candidateEdges.toList.sortBy(edge => costOf(edge))
+
+            // 3- Select the cheaper edge
+            val selectedEdge = sortedCandidateEdges.head
+            val correspondingNodes = List(nodesOf(selectedEdge)._1, nodesOf(selectedEdge)._2)
+            require(selectedNodes.contains(nodesOf(selectedEdge)._1) ||
+              selectedNodes.contains(nodesOf(selectedEdge)._2))
+
+            helperMinimumSpanningTree(
+              selectedNodes ++ correspondingNodes,
+              selectedEdges + selectedEdge)
+          }
+
+        if (nodes.isEmpty) {
+          newGraph(nodes, edges)
+        } else {
+          val firstNode = nodes.head
+          helperMinimumSpanningTree(Set(firstNode), Set())
+        }
+      }
+
+    /**
      * Computes all spanning forests of a given graph.
      *
      */
