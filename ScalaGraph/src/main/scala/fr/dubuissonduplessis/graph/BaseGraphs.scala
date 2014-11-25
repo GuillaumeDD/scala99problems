@@ -265,6 +265,46 @@ trait BaseGraphs {
      */
     def subGraph(nodes: Set[Node]): BaseGraph
 
+    /**
+     * Determines if a given graph is isomorphic to this graph.
+     * @return true if it is isomorphic, else false
+     */
+    def isIsomorphicTo(oGraph: BaseGraph): Boolean =
+      {
+        /*
+         * Helper function that computes a subset of all possible
+         * mappings by pruning some invalid mappings thanks to a heuristic.
+         */
+        def generateMappings(): Iterator[Map[Node, Node]] =
+          for {
+            // Selection of a permutation of nodes of the other graph
+            perm <- oGraph.nodes.toList.permutations
+            // Building of a potential mapping
+            potentialMapping = this.nodes.toList.zip(perm)
+            // Checking of the potential mapping against the heuristics
+            // (here, we only keep mappings which number of neighbors corresponds)
+            if potentialMapping.forall({
+              case (n1, n2) => this.adjacentNodes(n1).size == oGraph.adjacentNodes(n2).size
+            })
+          } yield (potentialMapping.toMap)
+
+        /*
+         * Checks whether a complete mapping is a isomorphic mapping. 
+         */
+        def isIsomorphicMapping(mapping: Map[Node, Node]): Boolean =
+          this.nodes.forall(n =>
+            this.adjacentNodes(n).map(mapping(_)).toSet == oGraph.adjacentNodes(mapping(n)).toSet)
+
+        if (this.nodes.size == oGraph.nodes.size &&
+          this.edges.size == oGraph.edges.size) {
+          generateMappings().exists(isIsomorphicMapping(_))
+        } else {
+          // Case: graphs do not have the same number of
+          // nodes or edges
+          false
+        }
+      }
+
     // Technical methods
     protected def canEqual(other: BaseGraph): Boolean
     override def equals(other: Any): Boolean =

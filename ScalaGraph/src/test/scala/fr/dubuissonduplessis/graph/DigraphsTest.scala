@@ -62,4 +62,109 @@ class DigraphsTest extends FunSuite {
       assert(cycles.contains(List('b', 'c', 'a', 'b')))
     }
   }
+
+  test("Invoking isIsomorphic on a digraph should return if the graphs are isomorphic") {
+    new Basics {
+      import SimpleDigraphModel._
+      /*
+       * Empty graphs (isomorphic)
+       */
+      val g1_a = newGraph(Set(), Set())
+      val g1_b = newGraph(Set(), Set())
+      assert(g1_a.isIsomorphicTo(g1_b))
+      assert(g1_b.isIsomorphicTo(g1_a))
+
+      /*
+       * One-node graphs (isomorphic)
+       */
+      val g2_a = newGraph(Set('a'), Set())
+      val g2_b = newGraph(Set('b'), Set())
+      assert(g2_a.isIsomorphicTo(g2_b))
+      assert(g2_b.isIsomorphicTo(g2_a))
+
+      /*
+       * Two-node graphs (isomorphic)
+       * 
+       * 	a     b
+       *  	+ --> +
+       *    
+       *    c     d
+       *    + <-- +
+       * 
+       */
+      val g3_a = newGraph(Set('a', 'b'), Set(('a', 'b')))
+      val g3_b = newGraph(Set('c', 'd'), Set(('d', 'c')))
+      assert(g3_a.isIsomorphicTo(g3_b))
+      assert(g3_b.isIsomorphicTo(g3_a))
+
+      /*
+       * Two-node graphs (non-isomorphic)
+       * 
+       * 	a     b
+       *  	+ --> +
+       *    
+       *    c     d
+       *    +     +
+       * 
+       */
+      val g4_a = newGraph(Set('a', 'b'), Set(('a', 'b')))
+      val g4_b = newGraph(Set('c', 'd'), Set())
+      assert(!g4_a.isIsomorphicTo(g4_b))
+      assert(!g4_b.isIsomorphicTo(g4_a))
+
+      /*
+       * 4-node graphs (non-isomorphic)
+       * 
+       * 	a     b
+       *  	+ --> +
+       *    ^     ^
+       *    |     |
+       *    c     d
+       *    +     +
+       *
+       * 
+       *   	e     f
+       *  	+ --> +
+       *    ^     |
+       *    |     |
+       *    g     h
+       *    +     + 
+       */
+      val g5_a = newGraph(
+        Set('a', 'b', 'c', 'd'),
+        Set(('a', 'b'), ('c', 'a'), ('d', 'b')))
+      val g5_b = newGraph(
+        Set('e', 'f', 'g', 'h'),
+        Set(('g', 'e'), ('e', 'f'), ('f', 'h')))
+      assert(!g5_a.isIsomorphicTo(g5_b))
+      assert(!g5_b.isIsomorphicTo(g5_a))
+
+      /*
+       * 4-node graphs (isomorphic)
+       * 
+       * 	a     b
+       *  	+ --> +
+       *    ^     ^
+       *    |     |
+       *    c     d
+       *    +     +
+       *
+       * 
+       *   	e     f
+       *  	+     +
+       *    |     |
+       *    |     |
+       *    g     h
+       *    + <-- + 
+       */
+      val g6_a = newGraph(
+        Set('a', 'b', 'c', 'd'),
+        Set(('a', 'b'), ('c', 'a'), ('d', 'b')))
+      val g6_b = newGraph(
+        Set('e', 'f', 'g', 'h'),
+        Set(('e', 'g'), ('f', 'h'), ('h', 'g')))
+      assert(g6_a.isIsomorphicTo(g6_b))
+      assert(g6_b.isIsomorphicTo(g6_a))
+    }
+  }
 }
