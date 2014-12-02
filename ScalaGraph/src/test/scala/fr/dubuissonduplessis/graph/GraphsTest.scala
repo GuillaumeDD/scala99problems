@@ -316,4 +316,65 @@ class GraphsTest extends FunSuite {
       assert(g6_b.isIsomorphicTo(g6_a))
     }
   }
+
+  test("Invoking coloredNodes on a graph should return a list of tuples") {
+    new Basics {
+      import SimpleGraphModel._
+
+      def numberOfDifferentColor(l: List[(Char, Int)]): Int =
+        l.map(_._2).toSet.size
+
+      /*
+       * Empty graph
+       */
+      val g1 = newGraph(Set(), Set())
+      assert(numberOfDifferentColor(g1.coloredNodes) == 0)
+
+      /*
+       * One-node graph
+       */
+      val g2 = newGraph(Set('a'), Set())
+      assert(numberOfDifferentColor(g2.coloredNodes) == 1)
+
+      /*
+       * Two-node graph
+       *  a    b
+       *  + -- +
+       */
+      val g3 = newGraph(
+        Set('a', 'b'),
+        Set(('a', 'b')))
+      assert(numberOfDifferentColor(g3.coloredNodes) == 2)
+
+      /*
+       * Three-node graph
+       *  a    b
+       *  + -- +
+       *   \  /
+       *    c
+       */
+      val g4 = newGraph(
+        Set('a', 'b', 'c'),
+        Set(('a', 'b'), ('a', 'c'), ('b', 'c')))
+      assert(numberOfDifferentColor(g4.coloredNodes) == 3)
+
+      /*
+       * Three-node graph
+       *  a    b    c
+       *  + -- + -- +
+       *  
+       */
+      val g5 = newGraph(
+        Set('a', 'b', 'c'),
+        Set(('a', 'b'), ('b', 'c')))
+      assert(numberOfDifferentColor(g5.coloredNodes) == 2)
+
+      /*
+       * Standard example
+       *  
+       */
+      assert(numberOfDifferentColor(graph.coloredNodes) == 4)
+
+    }
+  }
 }

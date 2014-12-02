@@ -200,6 +200,71 @@ trait Graphs extends BaseGraphs {
     lazy val isTree: Boolean =
       isForest && isConnected
 
+    /**
+     * Computes the degree of a given node in this graph.
+     * @note It does not take into account self-loop.
+     * @note It is required that the graph contains the given node.
+     */
+    def degree(n: Node): Int = {
+      require(nodes.contains(n), s"$n is not a node of this graph.")
+      adjacentNodes(n).filter(_ != n).size
+    }
+
+    /**
+     *  Lists all nodes of a graph sorted according to decreasing degree.
+     */
+    lazy val nodesByDegree: List[Node] =
+      nodes.toList.sortBy(-degree(_))
+
+    /**
+     * Uses Welsh-Powell's algorithm to paint the nodes of a graph in such
+     * a way that adjacent nodes have different colors.
+     * @return list of tuples, each of which contains a node and an integer
+     * representing its color.
+     */
+    def coloredNodes(): List[(Node, Int)] =
+      {
+        def coloredNodesHelper(color: Int, uncolored: List[Node], colored: List[(Node, Int)]): List[(Node, Int)] =
+          uncolored match {
+            case List() =>
+              // All nodes are colored
+              colored
+            case nonEmptyList =>
+              val newColored = applyColor(color, uncolored, colored, Set())
+              coloredNodesHelper(
+                // Generation of a new color
+                color + 1,
+                // Update of colored nodes
+                {
+                  val newColoredNodes = newColored.map(_._1)
+                  uncolored.filterNot(newColoredNodes.contains(_))
+                },
+                // Communication of the colored nodes
+                newColored)
+          }
+
+        def applyColor(color: Int, uncolored: List[Node], colored: List[(Node, Int)], adjacentNodes: Set[Node]): List[(Node, Int)] =
+          uncolored match {
+            case List() => colored
+            /*
+             * head: represents a node to be colored
+             * tail: potential other nodes to color
+             */
+            case head :: tail =>
+              // Store adjacent nodes
+              val newAdjacentNodes = adjacentNodes ++ this.adjacentNodes(head)
+              applyColor(color,
+                // Research the next node which is not adjacent in the tail
+                // (the next node to color with the same color)
+                tail.dropWhile(newAdjacentNodes.contains(_)),
+                // Color the head of this list
+                (head, color) :: colored,
+                newAdjacentNodes)
+          }
+
+        coloredNodesHelper(0, nodesByDegree, List())
+      }
+
     protected def canEqual(other: BaseGraph): Boolean =
       other.isInstanceOf[GraphSig]
   }

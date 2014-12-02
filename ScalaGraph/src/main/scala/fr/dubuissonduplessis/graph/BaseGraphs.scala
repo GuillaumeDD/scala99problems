@@ -260,12 +260,6 @@ trait BaseGraphs {
       } yield (path)
 
     /**
-     * Computes a new graph from a given set of nodes that consists of
-     * these nodes and any edges of the original graph that connect them.
-     */
-    def subGraph(nodes: Set[Node]): BaseGraph
-
-    /**
      * Determines if a given graph is isomorphic to this graph.
      * @return true if it is isomorphic, else false
      */
@@ -304,6 +298,12 @@ trait BaseGraphs {
           false
         }
       }
+
+    /**
+     * Computes a new graph from a given set of nodes that consists of
+     * these nodes and any edges of the original graph that connect them.
+     */
+    def subGraph(nodes: Set[Node]): BaseGraph
 
     // Technical methods
     protected def canEqual(other: BaseGraph): Boolean
