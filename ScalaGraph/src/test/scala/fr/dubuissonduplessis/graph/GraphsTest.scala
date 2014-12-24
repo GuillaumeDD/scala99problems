@@ -377,4 +377,35 @@ class GraphsTest extends FunSuite {
 
     }
   }
+  
+  test("Invoking nodesByDepthFrom should return a list of nodes") {
+    new Basics {
+      import SimpleGraphModel._
+      /*
+       * Empty graphs
+       */
+      val g1 = newGraph(Set(), Set())
+      assert(g1.nodesByDepthFrom('_') == List())
+
+      /*
+       *    a
+       *    +
+       *
+       */
+      val g2 = newGraph(Set('a'), Set())
+      assert(g2.nodesByDepthFrom('a') == List('a'))
+
+      /*
+       *    a
+       *    +
+       *   / \
+       *  + - +
+       *  b   c
+       *  
+       */
+      val g3 = newGraph(Set('a', 'b', 'c'), Set(('a', 'b'), ('a', 'c'), ('b', 'c')))
+      assert(g3.nodesByDepthFrom('a') == List('c', 'b', 'a') ||
+        g3.nodesByDepthFrom('a') == List('b', 'c', 'a'))
+    }
+  }
 }

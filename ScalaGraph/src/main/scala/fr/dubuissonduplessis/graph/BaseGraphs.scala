@@ -300,6 +300,39 @@ trait BaseGraphs {
       }
 
     /**
+     * Generates a depth-first order graph traversal sequence from a given starting point should be specified.
+     *
+     * @return a list of nodes that are reachable from this starting point (in depth-first order).
+     */
+    def nodesByDepthFrom(startingNode: Node): List[Node] = {
+      @tailrec
+      def nodesByDepthFromHelper(neighbors: List[Node], visitedNodes: List[Node]): List[Node] =
+        neighbors match {
+          // Case 1: no more unvisited neighbors
+          case List() =>
+            visitedNodes
+          // Case 2: skip an already visited neighbors
+          case head :: tail if visitedNodes contains head =>
+            nodesByDepthFromHelper(tail, visitedNodes)
+          // Case 3: unvisited neighbor
+          case head :: tail =>
+            // Determination of the new neighbors
+            val subnodes = adjacentNodes(head).toList
+            nodesByDepthFromHelper(
+              // Addition of the new neighbor (first to be depth first)
+              subnodes ::: tail,
+              // Addition of the visited node to the resulting list
+              head :: visitedNodes)
+        }
+
+      if (this.nodes.contains(startingNode)) {
+        nodesByDepthFromHelper(adjacentNodes(startingNode).toList, startingNode :: List())
+      } else {
+        List()
+      }
+    }
+
+    /**
      * Computes a new graph from a given set of nodes that consists of
      * these nodes and any edges of the original graph that connect them.
      */

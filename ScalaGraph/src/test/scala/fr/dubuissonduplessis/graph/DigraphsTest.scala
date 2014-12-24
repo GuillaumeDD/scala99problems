@@ -167,4 +167,35 @@ class DigraphsTest extends FunSuite {
       assert(g6_b.isIsomorphicTo(g6_a))
     }
   }
+
+  test("Invoking nodesByDepthFrom should return a list of nodes") {
+    new Basics {
+      import SimpleDigraphModel._
+
+      /*
+       * Empty graphs
+       */
+      val g1 = newGraph(Set(), Set())
+      assert(g1.nodesByDepthFrom('_') == List())
+
+      /*
+       *    a
+       *    +
+       *
+       */
+      val g2 = newGraph(Set('a'), Set())
+      assert(g2.nodesByDepthFrom('a') == List('a'))
+
+      /*
+       *    a      b      c
+       *    + ---> + ---> +
+       *            \
+       *             ---> +
+       *                  d
+       */
+      val g3 = newGraph(Set('a', 'b', 'c', 'd'), Set(('a', 'b'), ('b', 'c'), ('b', 'd')))
+      assert(g3.nodesByDepthFrom('a') == List('d', 'c', 'b', 'a') ||
+        g3.nodesByDepthFrom('a') == List('c', 'd', 'b', 'a'))
+    }
+  }
 }
