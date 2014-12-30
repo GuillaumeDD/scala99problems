@@ -198,4 +198,63 @@ class DigraphsTest extends FunSuite {
         g3.nodesByDepthFrom('a') == List('c', 'd', 'b', 'a'))
     }
   }
+
+  test("Invoking connectedComponents should return a list of components") {
+    new Basics {
+      import SimpleDigraphModel._
+      /*
+       * Empty graphs
+       */
+      val g1 = newGraph(Set(), Set())
+      assert(g1.connectedComponents == List())
+
+      /*
+       *    a
+       *    +
+       *
+       */
+      val g2 = newGraph(Set('a'), Set())
+      val g2_solution = newGraph(Set('a'), Set())
+      assert(g2.connectedComponents == List(g2_solution))
+
+      /*
+       * Graph example from Basics trait
+       */
+      assert(graph.connectedComponents == List(graph))
+
+      /*
+       *    a    b
+       *    +    +
+       *
+       */
+      val g3 = newGraph(Set('a', 'b'), Set())
+      val g3_solution_a = newGraph(Set('a'), Set())
+      val g3_solution_b = newGraph(Set('b'), Set())
+      val solution3 = List(g3_solution_a, g3_solution_b)
+      assert(solution3.size == g3.connectedComponents.size)
+      assert(g3.connectedComponents.forall(solution3.contains(_)))
+
+      /*
+       *    a     d     g
+       *    + --> + <-- +
+       *    
+       *    + <-- + --> +
+       *    b     e     h
+       *
+       *    + --> + --> +
+       *    c     f     i
+       *
+       */
+      val g4 = newGraph(Set('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'),
+        Set(('a', 'd'), ('d', 'g'),
+          ('e', 'b'), ('e', 'h'),
+          ('c', 'f'), ('f', 'i')))
+      val g4_solution_a = newGraph(Set('a', 'd', 'g'), Set(('a', 'd'), ('d', 'g')))
+      val g4_solution_b = newGraph(Set('b', 'e', 'h'), Set(('e', 'b'), ('e', 'h')))
+      val g4_solution_c = newGraph(Set('c', 'f', 'i'), Set(('c', 'f'), ('f', 'i')))
+      val solution4 = List(g4_solution_a, g4_solution_b, g4_solution_c)
+      assert(solution4.size == g4.connectedComponents.size)
+      assert(g4.connectedComponents.forall(solution4.contains(_)))
+    }
+  }
 }

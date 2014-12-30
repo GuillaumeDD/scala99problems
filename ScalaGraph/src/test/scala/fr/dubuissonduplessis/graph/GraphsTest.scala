@@ -377,7 +377,7 @@ class GraphsTest extends FunSuite {
 
     }
   }
-  
+
   test("Invoking nodesByDepthFrom should return a list of nodes") {
     new Basics {
       import SimpleGraphModel._
@@ -406,6 +406,58 @@ class GraphsTest extends FunSuite {
       val g3 = newGraph(Set('a', 'b', 'c'), Set(('a', 'b'), ('a', 'c'), ('b', 'c')))
       assert(g3.nodesByDepthFrom('a') == List('c', 'b', 'a') ||
         g3.nodesByDepthFrom('a') == List('b', 'c', 'a'))
+    }
+  }
+
+  test("Invoking connectedComponents should return a list of components") {
+    new Basics {
+      import SimpleGraphModel._
+      /*
+       * Empty graphs
+       */
+      val g1 = newGraph(Set(), Set())
+      assert(g1.connectedComponents == List())
+
+      /*
+       *    a
+       *    +
+       *
+       */
+      val g2 = newGraph(Set('a'), Set())
+      val g2_solution = newGraph(Set('a'), Set())
+      assert(g2.connectedComponents == List(g2_solution))
+
+      /*
+       * Graph example from Basics trait
+       */
+      assert(graph.connectedComponents == List(graph))
+
+      /*
+       *    a    b
+       *    +    +
+       *
+       */
+      val g3 = newGraph(Set('a', 'b'), Set())
+      val g3_solution_a = newGraph(Set('a'), Set())
+      val g3_solution_b = newGraph(Set('b'), Set())
+      val solution3 = List(g3_solution_a, g3_solution_b)
+      assert(solution3.size == g3.connectedComponents.size)
+      assert(g3.connectedComponents.forall(solution3.contains(_)))
+
+      /*
+       *    a    b    c
+       *    +    +    +
+       *    |    |    |
+       *    +    +    +
+       *    d    e    f
+       */
+      val g4 = newGraph(Set('a', 'b', 'c', 'd', 'e', 'f'), Set(('a', 'd'), ('b', 'e'), ('c', 'f')))
+      val g4_solution_a = newGraph(Set('a', 'd'), Set(('a', 'd')))
+      val g4_solution_b = newGraph(Set('b', 'e'), Set(('b', 'e')))
+      val g4_solution_c = newGraph(Set('c', 'f'), Set(('c', 'f')))
+      val solution4 = List(g4_solution_a, g4_solution_b, g4_solution_c)
+      assert(solution4.size == g4.connectedComponents.size)
+      assert(g4.connectedComponents.forall(solution4.contains(_)))
     }
   }
 }

@@ -41,6 +41,10 @@ trait Digraphs extends BaseGraphs {
     def adjacentNodesWithCost(n: Node): Set[(Node, EdgeCost)] =
       outgoing(n).map(edge => (succ(edge), costOf(edge)))
 
+    def connectedNodes(n: Node): Set[Node] =
+      outgoing(n).map(succ(_)) ++
+        incoming(n).map(pred(_))
+
     def edgeBetween(n1: Node, n2: Node): Option[Edge] =
       edges.find(edge => {
         val (n1_, n2_) = (pred(edge), succ(edge))

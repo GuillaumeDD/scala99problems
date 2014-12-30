@@ -72,6 +72,14 @@ trait BaseGraphs {
     def adjacentNodesWithEdge(n: Node): Set[(Node, Edge)]
     def adjacentNodesWithCost(n: Node): Set[(Node, EdgeCost)]
 
+    /**
+     * Determines nodes which are connected to a given one.
+     * Nodes are connected if it exists an edge between them (independently
+     * of the directedness of the edge).
+     *
+     */
+    def connectedNodes(n: Node): Set[Node]
+
     def edgeBetween(n1: Node, n2: Node): Option[Edge]
 
     def outgoing(n: Node): Set[Edge]
@@ -331,6 +339,66 @@ trait BaseGraphs {
         List()
       }
     }
+
+    lazy val connectedComponents: List[BaseGraph] =
+      {
+        def connectedNodes(): List[Set[Node]] =
+          {
+            def exploringNodes(
+              unvisitedNodes: Set[Node],
+              unexploredNodes: Set[Node],
+              currentComponent: Set[Node],
+              components: List[Set[Node]]): List[Set[Node]] =
+              (unvisitedNodes.isEmpty, unexploredNodes.isEmpty) match {
+                case (true, true) =>
+                  // Case: all nodes have been visited, no unexplored nodes
+                  if (currentComponent.isEmpty) {
+                    components
+                  } else {
+                    currentComponent :: components
+                  }
+
+                case (true, false) =>
+                  // Case: all nodes have been visited, it exists unexplored nodes
+                  (unexploredNodes ++ currentComponent) :: components
+
+                case (_, true) =>
+                  // Case: it exists unvisited nodes, no unexplored nodes
+                  // Extraction of an unvisited node
+                  val head = unvisitedNodes.head
+                  val tail = unvisitedNodes.tail
+
+                  exploringNodes(tail,
+                    unexploredNodes + head,
+                    Set(),
+                    if (currentComponent.isEmpty) {
+                      components
+                    } else {
+                      currentComponent :: components
+                    })
+
+                case (_, false) =>
+                  val newComponent = currentComponent ++ unexploredNodes
+                  val newUnexploredNodes = unexploredNodes
+                    .flatMap(this.connectedNodes(_))
+                    .filterNot(currentComponent.contains(_))
+
+                  val newUnvisitedNodes = unvisitedNodes -- newComponent
+
+                  exploringNodes(newUnvisitedNodes,
+                    newUnexploredNodes,
+                    newComponent,
+                    components)
+              }
+
+            exploringNodes(
+              this.nodes,
+              Set(),
+              Set(),
+              List())
+          }
+        connectedNodes().map(subGraph(_))
+      }
 
     /**
      * Computes a new graph from a given set of nodes that consists of

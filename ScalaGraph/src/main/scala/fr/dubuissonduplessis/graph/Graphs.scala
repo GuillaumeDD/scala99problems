@@ -19,7 +19,9 @@ trait Graphs extends BaseGraphs {
   type Graph <: GraphSig
 
   trait GraphSig extends BaseGraph {
-
+	  
+    def connectedNodes(n: Node): Set[Node] =
+      adjacentNodes(n)
     def edgesOf(n: Node): Set[Edge]
 
     def edgeBetween(n1: Node, n2: Node): Option[Edge] =
