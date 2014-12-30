@@ -28,7 +28,7 @@ trait Digraphs extends BaseGraphs {
     (pred(e), succ(e))
 
   type Digraph <: DigraphSig
-
+  type GeneratedGraph = Digraph
   trait DigraphSig extends BaseGraph {
     def sources: Set[Node]
 

@@ -17,9 +17,10 @@ import scala.collection.immutable.Queue
 
 trait Graphs extends BaseGraphs {
   type Graph <: GraphSig
+  type GeneratedGraph = Graph
 
   trait GraphSig extends BaseGraph {
-	  
+
     def connectedNodes(n: Node): Set[Node] =
       adjacentNodes(n)
     def edgesOf(n: Node): Set[Edge]
