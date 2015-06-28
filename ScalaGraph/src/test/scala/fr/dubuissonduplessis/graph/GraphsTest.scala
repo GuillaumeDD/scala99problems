@@ -460,4 +460,6 @@ class GraphsTest extends FunSuite {
       assert(g4.connectedComponents.forall(solution4.contains(_)))
     }
   }
+
+
 }

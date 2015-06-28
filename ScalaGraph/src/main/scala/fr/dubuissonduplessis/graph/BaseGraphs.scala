@@ -406,6 +406,53 @@ trait BaseGraphs {
         connectedNodes().map(subGraph(_))
       }
 
+    private lazy val isBipartiteInternal: Boolean = {
+      def isBipartiteHelper(
+        candidateEvenNodes: List[Node],
+        candidateOddNodes: List[Node],
+        evenNodes: Set[Node],
+        oddNodes: Set[Node]): Boolean =
+        (candidateEvenNodes, candidateOddNodes) match {
+          case (List(), List()) => true
+
+          case (candidate :: otherCandidates, otherCandidateOddNodes) =>
+            // Check that adjacent nodes are not even
+            val adjacentOddNodes = this.adjacentNodes(candidate)
+            val areCorrectAdjacentNodes = adjacentOddNodes.forall(!evenNodes.contains(_))
+            // Check other nodes
+            if (areCorrectAdjacentNodes) {
+              // Compute the candidate odd nodes (adjacent nodes that are not yet registered as odd nodes)
+              val newCandidateOddNodes = (adjacentOddNodes.toList ::: otherCandidateOddNodes).filter(!oddNodes.contains(_))
+              isBipartiteHelper(otherCandidates, newCandidateOddNodes, evenNodes + candidate, oddNodes ++ adjacentOddNodes)
+            } else {
+              false
+            }
+
+          case (List(), candidate :: otherCandidates) =>
+            // Check that adjacent nodes are not even 
+            val adjacentEvenNodes = this.adjacentNodes(candidate)
+            val areCorrectAdjacentNodes = adjacentEvenNodes.forall(!oddNodes.contains(_))
+
+            // Check other nodes
+            if (areCorrectAdjacentNodes) {
+              // Compute the candidate even nodes (adjacent nodes that are not yet registered as even nodes)
+              val newCandidateEvenNodes = adjacentEvenNodes.toList.filter(!evenNodes.contains(_))
+              isBipartiteHelper(newCandidateEvenNodes, otherCandidates, evenNodes ++ adjacentEvenNodes, oddNodes + candidate)
+            } else {
+              false
+            }
+
+        }
+
+      this.nodes.headOption match {
+        case None => true // Empty case
+        case Some(node) => isBipartiteHelper(List(node), List(), Set(), Set())
+      }
+    }
+
+    lazy val isBipartite: Boolean =
+      this.connectedComponents.forall(_.isBipartiteInternal)
+
     /**
      * Computes a new graph from a given set of nodes that consists of
      * these nodes and any edges of the original graph that connect them.

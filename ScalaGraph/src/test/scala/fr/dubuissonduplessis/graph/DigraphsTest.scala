@@ -257,4 +257,53 @@ class DigraphsTest extends FunSuite {
       assert(g4.connectedComponents.forall(solution4.contains(_)))
     }
   }
+
+  test("Invoking isBipartite should determine if the graph is bipartite or not") {
+    new Basics {
+      import SimpleDigraphModel._
+
+      /*
+       * Empty graph
+       */
+      val g1 = newGraph(Set(), Set())
+      assert(g1.isBipartite)
+
+      /*
+       *   d    b
+       *   + -> +
+       *       /|
+       *      /
+       *     /
+       *   + -> +
+       *   a    c
+       */
+      val g2 = newGraph(Set('a', 'b', 'c', 'd'), Set(('a', 'b'), ('a', 'c'), ('d', 'b')))
+      assert(g2.isBipartite)
+
+      /*
+       *   d    b
+       *   +    +
+       *       /|
+       *      /
+       *     /
+       *   + -> +
+       *   a    c
+       */
+      val g3 = newGraph(Set('a', 'b', 'c', 'd'), Set(('a', 'b'), ('a', 'c')))
+      assert(g3.isBipartite)
+
+      /*
+       *  a    b    c   d
+       *  + -> + <- +   +
+       *  
+       *  e    f    g   h
+       *  + -> + <- +   +
+       *   \_______/|
+       */
+      val g4 = newGraph(Set('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'),
+        Set(('a', 'b'), ('c', 'd'), ('e', 'f'), ('g', 'f'), ('e', 'g')))
+      assert(!g4.isBipartite)
+    }
+  }
+
 }
