@@ -2,15 +2,15 @@ name := "ScalaGraph"
 
 version := "0.1"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.11.7"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
-libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0"
+libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.4"
 
 libraryDependencies += "junit" % "junit" % "4.10" % "test"
 
-libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2"
+libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
 
 libraryDependencies += "org.slf4j" % "slf4j-api" % "1.6.1"
 
