@@ -6,6 +6,10 @@ You can run the solutions via SBT:
 
     $ sbt test
 
+You can run a specific solution by specifying the full class name via:
+
+    $ sbt "test-only list.P01.sol01"
+
 # Recipes #
 
 ## ...to add a problem ##
